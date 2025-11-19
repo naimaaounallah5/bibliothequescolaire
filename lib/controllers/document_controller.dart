@@ -16,7 +16,6 @@ class DocumentController {
       await col.doc(doc.id).update(doc.toMap());
     }
   }
-
   // Supprimer un document
   Future<void> deleteDocument(String id) async {
     await col.doc(id).delete();

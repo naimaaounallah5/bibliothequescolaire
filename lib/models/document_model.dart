@@ -17,7 +17,7 @@ class DocumentModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'titre': title,       // nom exact dans Firestore
+      'titre': title,    
       'author': author,
       'category': category,
       'year': year,
