@@ -29,7 +29,7 @@ class DocumentController {
             .toList());
   }
 
-  // Recherche par titre
+  // Recherche par titres
   Stream<List<DocumentModel>> search(String term) {
     return col
         .where('titre', isEqualTo: term.trim())
