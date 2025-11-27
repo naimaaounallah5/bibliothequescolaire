@@ -4,7 +4,7 @@ import '../models/user_model.dart';
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Inscription
+  // partie Inscription
   Future<AppUser?> register(String email, String password, String role) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
