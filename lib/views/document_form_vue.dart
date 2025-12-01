@@ -4,7 +4,9 @@ import '../models/document_model.dart';
 
 class DocumentFormVue extends StatefulWidget {
   final DocumentModel? document;
-  const DocumentFormVue({super.key, this.document});
+  final VoidCallback? onSave; // paramètre optionnel
+
+  const DocumentFormVue({super.key, this.document, this.onSave});
 
   @override
   State<DocumentFormVue> createState() => _DocumentFormVueState();
@@ -44,18 +46,21 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
     );
 
     if (widget.document == null) {
-      await ctrl.addDocument(r);  // ajout réel dans Firestore
+      await ctrl.addDocument(r);
     } else {
-      await ctrl.updateDocument(r);  // modification uniquement si id existe
+      await ctrl.updateDocument(r);
     }
 
-    Navigator.pop(context);
+    // Appelle le callback onSave si fourni
+    if (widget.onSave != null) widget.onSave!();
+
+    Navigator.pop(context, r);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.document == null ? "Ajouter" : "Modifier")),
+      appBar: AppBar(title: Text(widget.document == null ? "Ajouter Document" : "Modifier Document")),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Form(
@@ -85,7 +90,7 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
                 onChanged: (v) => setState(() => available = v),
                 title: const Text("Disponible"),
               ),
-              ElevatedButton(onPressed: save, child: const Text("Enregistrer"))
+              ElevatedButton(onPressed: save, child: const Text("Enregistrer")),
             ],
           ),
         ),

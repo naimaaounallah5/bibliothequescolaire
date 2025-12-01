@@ -17,7 +17,7 @@ class DocumentModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'titre': title,    
+      'title': title,      // champ corrigé
       'author': author,
       'category': category,
       'year': year,
@@ -28,7 +28,7 @@ class DocumentModel {
   factory DocumentModel.fromMap(String id, Map<String, dynamic> map) {
     return DocumentModel(
       id: id,
-      title: map['titre'] ?? '',
+      title: map['title'] ?? '',   // champ corrigé
       author: map['author'] ?? '',
       category: map['category'] ?? '',
       year: map['year'] ?? 0,

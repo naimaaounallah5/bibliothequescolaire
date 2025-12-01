@@ -16,49 +16,63 @@ class _DocumentListVueState extends State<DocumentListVue> {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<List<DocumentModel>> stream =
-        searchTerm.isEmpty ? ctrl.allDocuments() : ctrl.search(searchTerm);
-
     return Scaffold(
       appBar: AppBar(title: const Text("Catalogue de documents")),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
-              decoration: const InputDecoration(labelText: "Rechercher par titre..."),
+              decoration: const InputDecoration(
+                labelText: "Rechercher par titre...",
+                border: OutlineInputBorder(),
+              ),
               onChanged: (v) => setState(() => searchTerm = v.trim()),
             ),
           ),
           Expanded(
             child: StreamBuilder<List<DocumentModel>>(
-              stream: stream,
-              builder: (context, snap) {
-                if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-                final list = snap.data!;
+              stream: ctrl.allDocuments(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text("Erreur: ${snapshot.error}"));
+                }
 
-                if (list.isEmpty) return const Center(child: Text("Aucun document trouvé"));
+                final documents = snapshot.data ?? [];
+                final filtered = searchTerm.isEmpty
+                    ? documents
+                    : documents
+                        .where((d) => d.title.toLowerCase().contains(searchTerm.toLowerCase()))
+                        .toList();
+
+                if (filtered.isEmpty) {
+                  return const Center(child: Text("Aucun document trouvé"));
+                }
 
                 return ListView.builder(
-                  itemCount: list.length,
+                  itemCount: filtered.length,
                   itemBuilder: (_, i) {
-                    final r = list[i];
+                    final r = filtered[i];
                     return ListTile(
                       title: Text(r.title),
                       subtitle: Text("${r.author} • ${r.category} • ${r.year}"),
-                      trailing: PopupMenuButton(
+                      trailing: PopupMenuButton<String>(
                         itemBuilder: (_) => [
                           const PopupMenuItem(value: "edit", child: Text("Modifier")),
                           const PopupMenuItem(value: "delete", child: Text("Supprimer")),
                         ],
                         onSelected: (v) async {
                           if (v == "edit") {
-                            Navigator.push(
+                            final updatedDoc = await Navigator.push<DocumentModel>(
                               context,
                               MaterialPageRoute(builder: (_) => DocumentFormVue(document: r)),
                             );
+                            // Firestore will automatically update the stream
                           } else if (v == "delete") {
-                            if (r.id.isNotEmpty) await ctrl.deleteDocument(r.id);
+                            await ctrl.deleteDocument(r.id);
                           }
                         },
                       ),
@@ -71,9 +85,12 @@ class _DocumentListVueState extends State<DocumentListVue> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const DocumentFormVue()));
+        onPressed: () async {
+          final newDoc = await Navigator.push<DocumentModel>(
+            context,
+            MaterialPageRoute(builder: (_) => const DocumentFormVue()),
+          );
+          // Firestore stream will automatically update the list
         },
         child: const Icon(Icons.add),
       ),
