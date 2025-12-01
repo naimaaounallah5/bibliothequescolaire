@@ -23,6 +23,7 @@ class _DocumentVueState extends State<DocumentVue> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gestion des Documents'),
+        backgroundColor: Colors.teal,
         actions: [
           IconButton(
             icon: Icon(afficherFormulaire ? Icons.list : Icons.add),
@@ -30,14 +31,33 @@ class _DocumentVueState extends State<DocumentVue> {
           )
         ],
       ),
-      body: afficherFormulaire
-          ? DocumentFormVue(
-              onSave: () {
-                // Après ajout, revenir à la liste
-                basculerVue();
-              },
-            )
-          : DocumentListVue(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: afficherFormulaire
+            ? Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: DocumentFormVue(
+                    onSave: () {
+                      // Après ajout, revenir à la liste
+                      basculerVue();
+                    },
+                  ),
+                ),
+              )
+            : Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DocumentListVue(),
+                ),
+              ),
+      ),
     );
   }
 }

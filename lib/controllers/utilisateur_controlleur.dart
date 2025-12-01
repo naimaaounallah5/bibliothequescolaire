@@ -12,6 +12,7 @@ class UtilisateurControlleur {
       email: email,
       password: motDePasse,
     );
+
     await _firestore.collection('utilisateurs').doc(userCredential.user!.uid).set({
       'email': email,
       'role': role,
@@ -19,23 +20,20 @@ class UtilisateurControlleur {
     });
   }
 
-  // Connexion utilisateur
-  Future<User?> connexionUtilisateur(String email, String motDePasse) async {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: motDePasse,
-    );
-    return userCredential.user;
-  }
-
-  // Déconnexion
-  Future<void> deconnexion() async {
-    await _auth.signOut();
-  }
-
   // Supprimer un utilisateur
   Future<void> supprimerUtilisateur(String id) async {
+    // Supprimer de Firestore
     await _firestore.collection('utilisateurs').doc(id).delete();
+
+    // Supprimer de Authentication (optionnel, nécessite que l'utilisateur soit connecté)
+    try {
+      User? user = _auth.currentUser;
+      if (user != null && user.uid == id) {
+        await user.delete();
+      }
+    } catch (e) {
+      print("Impossible de supprimer depuis Auth: $e");
+    }
   }
 
   // Obtenir tous les utilisateurs

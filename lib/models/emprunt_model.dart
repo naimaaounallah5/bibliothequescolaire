@@ -30,11 +30,11 @@ class EmpruntModel {
   factory EmpruntModel.fromMap(String id, Map<String, dynamic> map) {
     DateTime parseDate(dynamic value) {
       if (value is Timestamp) {
-        return value.toDate();
+        return value.toDate(); // si c’est un Timestamp
       } else if (value is String) {
-        return DateTime.parse(value);
+        return DateTime.tryParse(value) ?? DateTime.now(); // si c’est une String
       } else {
-        throw Exception("Impossible de parser la date: $value");
+        return DateTime.now(); // valeur par défaut pour éviter l’erreur
       }
     }
 

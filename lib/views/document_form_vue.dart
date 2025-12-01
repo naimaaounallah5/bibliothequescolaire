@@ -51,7 +51,6 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
       await ctrl.updateDocument(r);
     }
 
-    // Appelle le callback onSave si fourni
     if (widget.onSave != null) widget.onSave!();
 
     Navigator.pop(context, r);
@@ -60,37 +59,79 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.document == null ? "Ajouter Document" : "Modifier Document")),
+      appBar: AppBar(
+        title: Text(widget.document == null ? "Ajouter Document" : "Modifier Document"),
+        backgroundColor: Colors.teal,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
+              // Titre
               TextFormField(
                 controller: titleCtrl,
-                decoration: const InputDecoration(labelText: "Titre"),
+                decoration: InputDecoration(
+                  labelText: "Titre",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.book),
+                ),
                 validator: (v) => v!.isEmpty ? "Champ obligatoire" : null,
               ),
+              const SizedBox(height: 12),
+              // Auteur
               TextFormField(
                 controller: authorCtrl,
-                decoration: const InputDecoration(labelText: "Auteur"),
+                decoration: InputDecoration(
+                  labelText: "Auteur",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.person),
+                ),
               ),
+              const SizedBox(height: 12),
+              // Catégorie
               TextFormField(
                 controller: categoryCtrl,
-                decoration: const InputDecoration(labelText: "Catégorie"),
+                decoration: InputDecoration(
+                  labelText: "Catégorie",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.category),
+                ),
               ),
+              const SizedBox(height: 12),
+              // Année
               TextFormField(
                 controller: yearCtrl,
-                decoration: const InputDecoration(labelText: "Année"),
+                decoration: InputDecoration(
+                  labelText: "Année",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.calendar_today),
+                ),
                 keyboardType: TextInputType.number,
               ),
+              const SizedBox(height: 12),
+              // Disponible
               SwitchListTile(
                 value: available,
                 onChanged: (v) => setState(() => available = v),
                 title: const Text("Disponible"),
+                activeColor: Colors.teal,
               ),
-              ElevatedButton(onPressed: save, child: const Text("Enregistrer")),
+              const SizedBox(height: 12),
+              // Bouton Enregistrer
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Enregistrer", style: TextStyle(fontSize: 18)),
+                ),
+              ),
             ],
           ),
         ),
