@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/utilisateur_model.dart';
@@ -41,4 +42,5 @@ class UtilisateurControlleur {
     return _firestore.collection('utilisateurs').snapshots().map(
         (snapshot) => snapshot.docs.map((doc) => Utilisateur.fromMap(doc.id, doc.data())).toList());
   }
+  
 }

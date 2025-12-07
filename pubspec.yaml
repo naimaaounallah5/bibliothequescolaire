@@ -34,6 +34,7 @@ dependencies:
   firebase_auth: ^4.8.0
   cloud_firestore: ^4.9.0
   cupertino_icons: ^1.0.8
+  charts_flutter: ^0.12.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -56,12 +57,16 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+#flutter:
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  #uses-material-design: true
+flutter:
   uses-material-design: true
+  assets:
+    - assets/library.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
