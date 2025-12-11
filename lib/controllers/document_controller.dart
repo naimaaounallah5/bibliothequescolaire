@@ -5,7 +5,7 @@ class DocumentController {
   final CollectionReference col =
       FirebaseFirestore.instance.collection('documents');
 
-  /// Add a document and return it with the generated ID
+  /// Add a document and return it with the generated ID (automatique)
   Future<DocumentModel?> addDocument(DocumentModel doc) async {
     try {
       final docRef = await col.add(doc.toMap());
