@@ -22,7 +22,7 @@ return snapshot.docs
 .toList();
 }
 
-// ✅ Récupérer tous les utilisateurs depuis Firestore
+// Récupérer tous les utilisateurs depuis Firestore
 Future<List<Utilisateur>> getUtilisateurs() async {
 QuerySnapshot snapshot = await _db.collection('utilisateurs').get();
 return snapshot.docs.map((doc) {
