@@ -1,7 +1,7 @@
 class Utilisateur {
   String id;
   String email;
-  String role; //  cest le role de 'apprenant', 'admin', 'bibliothecaire'
+  String role; //  apprenant/admin/bibliothecaire
 
   Utilisateur({required this.id, required this.email, required this.role});
 
