@@ -5,7 +5,7 @@ class DocumentController {
   final CollectionReference col =
       FirebaseFirestore.instance.collection('documents');
 
-  /// Add a document and return it with the generated ID (automatique)
+  /// ajouter un document et faire id automatique 
   Future<DocumentModel?> addDocument(DocumentModel doc) async {
     try {
       final docRef = await col.add(doc.toMap());
@@ -25,7 +25,7 @@ class DocumentController {
     }
   }
 
-  /// Update document safely
+  /// modifier un document
   Future<void> updateDocument(DocumentModel doc) async {
     if (doc.id.isEmpty) return;
     try {
@@ -36,7 +36,7 @@ class DocumentController {
     }
   }
 
-  /// Delete document safely
+  ///supprimer un document selon id 
   Future<void> deleteDocument(String id) async {
     try {
       await col.doc(id).delete();
@@ -46,7 +46,7 @@ class DocumentController {
     }
   }
 
-  /// Stream all documents
+  /// pour afficher tout les document dans interface gestion documents
   Stream<List<DocumentModel>> allDocuments() {
     return col.snapshots().map((snap) => snap.docs
         .map((d) =>
@@ -54,7 +54,7 @@ class DocumentController {
         .toList());
   }
 
-  /// Search documents by title
+  /// on va rechercher un document par titre 
   Stream<List<DocumentModel>> search(String term) {
     return col
         .where('title', isEqualTo: term.trim())
