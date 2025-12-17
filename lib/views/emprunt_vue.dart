@@ -10,16 +10,17 @@ class EmpruntVue extends StatefulWidget {
 }
 
 class _EmpruntVueState extends State<EmpruntVue> {
-  final TextEditingController _documentController = TextEditingController();
-  final TextEditingController _searchController = TextEditingController();
+  //Champs de texte pour le formulaire
+  final TextEditingController _documentController = TextEditingController();//id 
+  final TextEditingController _searchController = TextEditingController();//champs pour chercher 
+  ///ici ili ajoute au date de retour 7 jours a partir de maintenant 
   DateTime _dateRetour = DateTime.now().add(const Duration(days: 7));
   String _motCleRecherche = '';
   bool _afficherFormulaire = false;
 
-  // 🔹 Controller
+  // on a creer une instance avec le controlleur
   final EmpruntControlleur controller = EmpruntControlleur();
 
-  // 🔹 Ajouter un emprunt
   void ajouterEmprunt() async {
     if (_documentController.text.isEmpty) return;
 
@@ -27,15 +28,15 @@ class _EmpruntVueState extends State<EmpruntVue> {
       idDocument: _documentController.text.trim(),
       dateEmprunt: DateTime.now(),
       dateRetour: _dateRetour,
-      rendu: false,
+      rendu: false,/// c est a dire par defaut l emprunt n est pas rendu 
     );
-
+//Appel de la fonction du contrôleur pour ajouter l'emprunt dans Firestore
     await controller.ajouterEmprunt(emprunt);
     _documentController.clear();
     setState(() => _afficherFormulaire = false);
   }
 
-  // 🔹 Parser la date
+ 
   DateTime parseDate(dynamic value) {
     if (value is Timestamp) return value.toDate();
     if (value is String) return DateTime.tryParse(value) ?? DateTime.now();
@@ -52,7 +53,7 @@ class _EmpruntVueState extends State<EmpruntVue> {
           IconButton(
             icon: Icon(_afficherFormulaire ? Icons.list : Icons.add),
             tooltip: _afficherFormulaire ? "Voir la liste" : "Ajouter un emprunt",
-            onPressed: () {
+            onPressed: () {//lorsque je clique sur + il m affiche le formulaire 
               setState(() => _afficherFormulaire = !_afficherFormulaire);
             },
           ),
@@ -76,7 +77,7 @@ class _EmpruntVueState extends State<EmpruntVue> {
                           return const Center(child: CircularProgressIndicator());
                         }
 
-                        // 🔹 Filtrage par recherche
+                        // rechercher selon id emprunt
                         final emprunts = snapshot.data
                                 ?.where((e) => e.idDocument.contains(_motCleRecherche))
                                 .toList() ??
@@ -111,15 +112,18 @@ class _EmpruntVueState extends State<EmpruntVue> {
     );
   }
 
-  // 🔹 Formulaire
+  // le  Formulaire
   Widget _buildFormulaire() {
     return Center(
       key: const ValueKey(1),
       child: Card(
+        //espace a gauche
         margin: const EdgeInsets.all(16),
+        //coin arrondi
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 8,
         child: Padding(
+          //espace dans le champs haut bas droit a gauche tout 16 pixel
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -155,8 +159,10 @@ class _EmpruntVueState extends State<EmpruntVue> {
               ),
               const SizedBox(height: 12),
               ElevatedButton.icon(
+                //on va appliquer la fonction ajouter une emprunt 
                 onPressed: ajouterEmprunt,
                 icon: const Icon(Icons.save),
+                //la label le champs 
                 label: const Text("Enregistrer"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
@@ -180,6 +186,7 @@ class _EmpruntVueState extends State<EmpruntVue> {
         controller: _searchController,
         decoration: InputDecoration(
           labelText: "Rechercher par ID de document",
+          //icone de recherche
           prefixIcon: const Icon(Icons.search, color: Colors.teal),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           suffixIcon: IconButton(
@@ -195,7 +202,7 @@ class _EmpruntVueState extends State<EmpruntVue> {
     );
   }
 
-  // 🔹 Carte emprunt
+  // dans le buit de cree une carte pour chaque emprunt dans la liste 
   Widget _buildEmpruntCard(EmpruntModel emprunt) {
     return _AnimatedEmpruntCard(
       child: ListTile(
@@ -234,7 +241,7 @@ class _EmpruntVueState extends State<EmpruntVue> {
   }
 }
 
-// 🔹 Carte animée
+// lorsque je clique sur la carte elle fait zoom automqtique 
 class _AnimatedEmpruntCard extends StatefulWidget {
   final Widget child;
   const _AnimatedEmpruntCard({required this.child, super.key});
