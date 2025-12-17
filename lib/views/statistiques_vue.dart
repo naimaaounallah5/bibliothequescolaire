@@ -11,22 +11,23 @@ State<StatistiquesPage> createState() => _StatistiquesPageState();
 }
 
 class _StatistiquesPageState extends State<StatistiquesPage> {
+  // Service pour interagir avec Firestore
 final FirestoreService _firestoreService = FirestoreService();
-
+// Listes pour stocker les emprunts et documents récupérés
 List<EmpruntModel> emprunts = [];
 List<DocumentModel> documents = [];
+// Statistiques dérivées
+Map<String, int> livresPlusEmpruntes = {};// compteur par titre
+Map<String, int> documentsParCategorie = {}; // compteur par catégorie
 
-Map<String, int> livresPlusEmpruntes = {};
-Map<String, int> documentsParCategorie = {};
-
-bool isLoading = true;
+bool isLoading = true; // indicateur de chargement
 
 @override
 void initState() {
 super.initState();
-loadData();
+loadData();// Charger les données au démarrage
 }
-
+ // Fonction pour récupérer et calculer les statistiques
 Future<void> loadData() async {
 emprunts = await _firestoreService.getEmprunts();
 documents = await _firestoreService.getDocuments();
@@ -37,6 +38,7 @@ livresPlusEmpruntes.clear();
 for (var emprunt in emprunts) {
   String titre = emprunt.idDocument;
   if (titre.isNotEmpty) {
+      // Ajouter 1 au compteur si déjà présent, sinon initialiser à 1
     livresPlusEmpruntes[titre] = (livresPlusEmpruntes[titre] ?? 0) + 1;
   }
 }
@@ -50,11 +52,11 @@ for (var doc in documents) {
   }
 }
 
-setState(() => isLoading = false);
+setState(() => isLoading = false);// arrêter le loader
 
 
 }
-
+// Retourne le livre le plus emprunté sous forme de texte
 String getLivreLePlusEmprunte() {
 if (livresPlusEmpruntes.isEmpty) return "Aucun livre emprunté";
 final maxEntry = livresPlusEmpruntes.entries.reduce(
@@ -62,12 +64,12 @@ final maxEntry = livresPlusEmpruntes.entries.reduce(
 );
 return '${maxEntry.key} → ${maxEntry.value} emprunts';
 }
-
+// Fonction pour construire une "card" stylisée avec gradient et icône
 Widget buildCard({required IconData icon, required String title, required Widget child, required List<Color> gradientColors}) {
 return Container(
 margin: const EdgeInsets.symmetric(vertical: 10),
 decoration: BoxDecoration(
-gradient: LinearGradient(colors: gradientColors),
+gradient: LinearGradient(colors: gradientColors),// couleur dégradée
 borderRadius: BorderRadius.circular(16),
 boxShadow: [
 BoxShadow(
@@ -77,19 +79,22 @@ offset: const Offset(0, 4),
 )
 ],
 ),
+
+// Padding autour de la carte pour donner de l'espace intérieur
 child: Padding(
 padding: const EdgeInsets.all(16),
 child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
+crossAxisAlignment: CrossAxisAlignment.start,// Aligne tout à gauche
 children: [
+   // Ligne contenant l'icône et le titre de la carte
 Row(
 children: [
-Icon(icon, color: Colors.white, size: 28),
-const SizedBox(width: 12),
+Icon(icon, color: Colors.white, size: 28),// Icône en haut à gauche
+const SizedBox(width: 12),// Espacement entre icône et texte
 Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
 ],
 ),
-const SizedBox(height: 12),
+const SizedBox(height: 12), // Espacement vertical
 child,
 ],
 ),
@@ -97,20 +102,24 @@ child,
 );
 }
 
+// Build du widget principal
 @override
 Widget build(BuildContext context) {
 return Scaffold(
 appBar: AppBar(
-title: const Text("Statistiques"),
+title: const Text("Statistiques"),// Titre de la page
 backgroundColor: Colors.teal,
 ),
 body: isLoading
+// Si les données ne sont pas encore chargées, afficher un loader
 ? const Center(child: CircularProgressIndicator())
 : SingleChildScrollView(
-padding: const EdgeInsets.all(16),
+padding: const EdgeInsets.all(16),// Espacement autour de la colonne
 child: Column(
 crossAxisAlignment: CrossAxisAlignment.start,
 children: [
+
+
 // Livres les plus empruntés
 buildCard(
 icon: Icons.menu_book,
@@ -127,8 +136,7 @@ style: const TextStyle(color: Colors.white, fontSize: 16)))
 ),
 ),
 
-
-              // Livre le plus emprunté avec badge
+//Carte du livre le plus emprunté avec badge "Top"
               buildCard(
                 icon: Icons.star,
                 title: "Livre le plus emprunté",

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../controllers/document_controller.dart';
 import '../models/document_model.dart';
-
+//widget principal pour afficher liste des documents 
 class DocumentListVue extends StatefulWidget {
   final Function(DocumentModel)? onEdit;
   const DocumentListVue({super.key, this.onEdit});
@@ -20,16 +20,17 @@ class _DocumentListVueState extends State<DocumentListVue> {
     return TextField(
       decoration: InputDecoration(
         hintText: "Rechercher par titre...",
+        //icone pour la recherche 
         prefixIcon: const Icon(Icons.search, color: Colors.teal),
         filled: true,
-        fillColor: Colors.teal.shade50,
+        fillColor: Colors.teal.shade50,//c est le font leger 
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20),//le coins arrondi
           borderSide: BorderSide.none,
         ),
       ),
-      onChanged: (v) => setState(() => searchTerm = v.trim()),
+      onChanged: (v) => setState(() => searchTerm = v.trim()),// Met à jour la recherche
     );
   }
 

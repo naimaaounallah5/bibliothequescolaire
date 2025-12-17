@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../controllers/document_controller.dart';
 import '../models/document_model.dart';
-
+// c est le page de formulaire 
+///elle contient les champs a remplir 
 class DocumentFormVue extends StatefulWidget {
-  final DocumentModel? document;
-  final VoidCallback? onSave;
+  final DocumentModel? document;// Document existant à modifier (ou null si nouveau)
+  final VoidCallback? onSave;// Fonction callback après sauvegarde
 
   const DocumentFormVue({super.key, this.document, this.onSave});
 
@@ -13,15 +14,17 @@ class DocumentFormVue extends StatefulWidget {
 }
 
 class _DocumentFormVueState extends State<DocumentFormVue> {
+  //pour valider les champs de formulaire 
   final _formKey = GlobalKey<FormState>();
   final DocumentController ctrl = DocumentController();
-
+//je intialise le variable apres
+//les champs de texte de formulaire 
   late TextEditingController titleCtrl;
   late TextEditingController authorCtrl;
   late TextEditingController categoryCtrl;
   late TextEditingController yearCtrl;
   bool available = true;
-
+///pour preparer les champs pour ajouter ou modifier dans le formulaire 
   @override
   void initState() {
     super.initState();
@@ -34,8 +37,9 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
   }
 
   void save() async {
+    //si tout les champs obligatoire  de formulaire sont remplis 
     if (!_formKey.currentState!.validate()) return;
-
+//Créer un objet DocumentModel
     final r = DocumentModel(
       id: widget.document?.id ?? "",
       title: titleCtrl.text.trim(),
@@ -46,11 +50,16 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
     );
 
     if (widget.document == null) await ctrl.addDocument(r);
+    //pour ajouter nouveaux documents 
     else await ctrl.updateDocument(r);
 
     widget.onSave?.call();
   }
+//Il prend n’importe quel widget de champ (field) et le place dans une carte (Card).
 
+//La carte a une ombre légère (elevation: 2), des bords arrondis, et une couleur de fond claire.
+
+//À l’intérieur, il y a un padding pour que le champ ne touche pas directement les bords.
   Widget buildField({required Widget field}) {
     return Card(
       elevation: 2,
@@ -83,6 +92,7 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
                 validator: (v) => v!.isEmpty ? "Champ obligatoire" : null,
               ),
             ),
+            //champs de texte pour auteur
             buildField(
               field: TextFormField(
                 controller: authorCtrl,
@@ -93,6 +103,7 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
                 ),
               ),
             ),
+            //champs de texte pour categorie
             buildField(
               field: TextFormField(
                 controller: categoryCtrl,
@@ -103,6 +114,7 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
                 ),
               ),
             ),
+            //champs de texte pour l anneée
             buildField(
               field: TextFormField(
                 controller: yearCtrl,
@@ -114,6 +126,7 @@ class _DocumentFormVueState extends State<DocumentFormVue> {
                 keyboardType: TextInputType.number,
               ),
             ),
+            //diponible ou non true ou false 
             SwitchListTile(
               value: available,
               onChanged: (v) => setState(() => available = v),

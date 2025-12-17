@@ -12,7 +12,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const MyApp());///pour demarer l application 
 }
 
 class MyApp extends StatelessWidget {
@@ -90,7 +90,7 @@ class AccueilPage extends StatelessWidget {
   }
 }
 
-// ---------------- Dashboard ----------------
+// ---------------- les 4 card document /emprunt/utlisateur/statiqtiques ----------------
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -199,6 +199,7 @@ class _AnimatedCard extends StatefulWidget {
   @override
   State<_AnimatedCard> createState() => _AnimatedCardState();
 }
+//degradation de couleur 
 
 class _AnimatedCardState extends State<_AnimatedCard> {
   double _scale = 1.0;
